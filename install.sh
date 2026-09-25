@@ -310,27 +310,40 @@ install_netcdf_studio() {
         fi
     fi
 
-    # Install from GitHub repository
-    log_info "Installing from GitHub repository..."
-    local TEMP_DIR
-    TEMP_DIR=$(mktemp -d)
-
-    if git clone --depth 1 --branch "$GITHUB_BRANCH" "$GITHUB_REPO" "$TEMP_DIR/repo" 2>/dev/null; then
-        cd "$TEMP_DIR/repo/node-agent"
-
-        # Install dependencies
-        npm install --production
-
-        # Link globally
-        npm link
-
-        cd - > /dev/null
-        rm -rf "$TEMP_DIR"
-
-        log_success "Installed from GitHub ($GITHUB_BRANCH branch)"
+    # Install from npm (preferred) or GitHub
+    if npm view netcdf-studio-node &>/dev/null; then
+        # Package exists on npm
+        if [[ "$NETCDF_STUDIO_VERSION" == "latest" ]]; then
+            npm install -g netcdf-studio-node
+        else
+            npm install -g "netcdf-studio-node@$NETCDF_STUDIO_VERSION"
+        fi
+        log_success "Installed from npm registry"
     else
-        rm -rf "$TEMP_DIR"
-        error_exit "Failed to clone repository. Check your internet connection and repository access."
+        # Fallback to GitHub
+        log_info "Package not on npm, installing from GitHub..."
+
+        local TEMP_DIR
+        TEMP_DIR=$(mktemp -d)
+
+        # Use HTTPS with public access
+        if git clone --depth 1 --branch "$GITHUB_BRANCH" "https://github.com/netcdf-studio/NetCDF-Node.git" "$TEMP_DIR/repo" 2>&1; then
+            cd "$TEMP_DIR/repo"
+
+            # Install dependencies
+            npm install --production
+
+            # Link globally
+            npm link
+
+            cd - > /dev/null
+            rm -rf "$TEMP_DIR"
+
+            log_success "Installed from GitHub ($GITHUB_BRANCH branch)"
+        else
+            rm -rf "$TEMP_DIR"
+            error_exit "Failed to clone repository. Make sure the repository is public or published to npm."
+        fi
     fi
 
     # Verify
