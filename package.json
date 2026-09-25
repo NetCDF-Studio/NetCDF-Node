@@ -1,0 +1,51 @@
+{
+  "name": "netcdf-studio-node",
+  "version": "1.0.1",
+  "description": "Compute node agent for NetCDF Studio — lends this machine's CPU to process climate data jobs over WebSocket",
+  "type": "module",
+  "bin": {
+    "netcdf-studio-node": "./agent.js",
+    "netcdf-node": "./cli.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "socket.io-client": "^4.7.4"
+  },
+  "keywords": [
+    "netcdf",
+    "climate-data",
+    "compute-node",
+    "distributed-computing",
+    "websocket",
+    "era5",
+    "cmip6",
+    "weather",
+    "atmospheric-science"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/netcdf-studio/netcdf-node.git"
+  },
+  "homepage": "https://netcdfstudio.com",
+  "bugs": {
+    "url": "https://github.com/netcdf-studio/netcdf-node/issues"
+  },
+  "author": {
+    "name": "Soumalya",
+    "email": "soumalya@example.com"
+  },
+  "license": "MIT",
+  "files": [
+    "agent.js",
+    "cli.js",
+    "install.sh",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test agent.js",
+    "start": "node agent.js"
+  }
+}
